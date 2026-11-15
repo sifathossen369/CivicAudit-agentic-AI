@@ -40,9 +40,39 @@ class AuditConfig:
     OPENROUTER_BASE_URL: str = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
     OPENROUTER_AUTO_FREE: bool = os.getenv("OPENROUTER_AUTO_FREE", "true").lower() in ("true", "1", "yes")
     
-    # 2. Groq (Ultra-fast inference)
+    # 2. Groq (Ultra-fast inference with Multi-Key Rotation Pool)
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    GROQ_API_KEYS: str = os.getenv("GROQ_API_KEYS", "")
     GROQ_MODEL: str = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+    
+    @classmethod
+    def get_groq_api_keys(cls) -> list:
+        """
+        Collects all configured Groq API keys from:
+        - GROQ_API_KEYS (comma-separated list)
+        - GROQ_API_KEY (comma-separated or single)
+        - GROQ_API_KEY_1 through GROQ_API_KEY_10
+        Returns a deduplicated list of non-empty, valid key strings.
+        """
+        candidates = []
+        if cls.GROQ_API_KEYS:
+            candidates.extend(cls.GROQ_API_KEYS.split(","))
+        if cls.GROQ_API_KEY:
+            candidates.extend(cls.GROQ_API_KEY.split(","))
+        
+        for i in range(1, 11):
+            k = os.getenv(f"GROQ_API_KEY_{i}")
+            if k:
+                candidates.extend(k.split(","))
+
+        clean_keys = []
+        seen = set()
+        for k in candidates:
+            s = str(k).strip()
+            if len(s) > 8 and not s.lower().startswith("your_") and s not in seen:
+                seen.add(s)
+                clean_keys.append(s)
+        return clean_keys
     
     # 3. DeepSeek Direct API
     DEEPSEEK_API_KEY: str = os.getenv("DEEPSEEK_API_KEY", "")

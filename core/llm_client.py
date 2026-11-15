@@ -40,6 +40,9 @@ class LLMClient:
         "meta-llama/llama-3.2-3b-instruct:free"
     ]
 
+    # Class-level state for Groq pool rotation
+    _groq_active_key_index: int = 0
+
     @classmethod
     def _is_valid_key(cls, k: Any) -> bool:
         if not k:
@@ -52,8 +55,7 @@ class LLMClient:
         return bool(
             cls._is_valid_key(AuditConfig.OPENROUTER_API_KEY) or
             cls._is_valid_key(os.getenv("OPENROUTER_API_KEY")) or
-            cls._is_valid_key(AuditConfig.GROQ_API_KEY) or 
-            cls._is_valid_key(os.getenv("GROQ_API_KEY")) or
+            bool(AuditConfig.get_groq_api_keys()) or
             cls._is_valid_key(AuditConfig.DEEPSEEK_API_KEY) or
             cls._is_valid_key(AuditConfig.GEMINI_API_KEY) or 
             cls._is_valid_key(AuditConfig.OPENAI_API_KEY) or
@@ -72,8 +74,11 @@ class LLMClient:
         if cls._is_valid_key(AuditConfig.OPENROUTER_API_KEY) or cls._is_valid_key(os.getenv("OPENROUTER_API_KEY")):
             model_tag = AuditConfig.OPENROUTER_MODEL.split('/')[-1] if '/' in AuditConfig.OPENROUTER_MODEL else AuditConfig.OPENROUTER_MODEL
             return f"OpenRouter ({model_tag})"
-        if cls._is_valid_key(AuditConfig.GROQ_API_KEY) or cls._is_valid_key(os.getenv("GROQ_API_KEY")):
-            return "Groq (Llama-3.3 70B)"
+        groq_keys = AuditConfig.get_groq_api_keys()
+        if groq_keys:
+            key_count = len(groq_keys)
+            key_suffix = f" [{key_count} Keys Pool]" if key_count > 1 else ""
+            return f"Groq (Llama-3.3 70B{key_suffix})"
         if cls._is_valid_key(AuditConfig.DEEPSEEK_API_KEY):
             return "DeepSeek V3"
         if cls._is_valid_key(AuditConfig.GEMINI_API_KEY):
@@ -145,34 +150,32 @@ class LLMClient:
         return None
 
     # =========================================================================
-    # Provider 2: Groq
+    # Provider 2: Groq (with Multi-Key Pool & Automatic Failover on Rate Limit)
     # =========================================================================
     @classmethod
     def _call_groq(cls, prompt: str, system_instruction: str = "") -> Optional[str]:
-        api_key = AuditConfig.GROQ_API_KEY or os.getenv("GROQ_API_KEY")
-        if not cls._is_valid_key(api_key):
+        keys = AuditConfig.get_groq_api_keys()
+        if not keys:
             return None
-        
-        try:
-            from groq import Groq
-            client = Groq(api_key=api_key, timeout=8.0)
-            completion = client.chat.completions.create(
-                model=AuditConfig.GROQ_MODEL or "llama-3.3-70b-versatile",
-                messages=[
-                    {"role": "system", "content": system_instruction},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.1,
-                max_tokens=2048
-            )
-            return completion.choices[0].message.content
-        except Exception as e:
-            logger.debug(f"Groq primary model error: {e}. Trying instant fallback...")
+
+        num_keys = len(keys)
+        start_index = cls._groq_active_key_index % num_keys
+
+        for attempt in range(num_keys):
+            idx = (start_index + attempt) % num_keys
+            api_key = keys[idx]
+            key_display = f"Key #{idx + 1}/{num_keys}"
+
             try:
                 from groq import Groq
-                client = Groq(api_key=api_key, timeout=5.0)
+            except ImportError:
+                logger.error("groq package is not installed.")
+                return None
+
+            try:
+                client = Groq(api_key=api_key, timeout=8.0)
                 completion = client.chat.completions.create(
-                    model="llama-3.1-8b-instant",
+                    model=AuditConfig.GROQ_MODEL or "llama-3.3-70b-versatile",
                     messages=[
                         {"role": "system", "content": system_instruction},
                         {"role": "user", "content": prompt}
@@ -180,9 +183,58 @@ class LLMClient:
                     temperature=0.1,
                     max_tokens=2048
                 )
+                cls._groq_active_key_index = idx
+                if attempt > 0:
+                    logger.info(f"✅ [Groq Pool] Successfully recovered and served response using {key_display}.")
                 return completion.choices[0].message.content
-            except Exception:
-                pass
+
+            except Exception as e:
+                err_str = str(e).lower()
+                is_rate_limit = any(
+                    marker in err_str for marker in [
+                        "rate limit", "rate_limit", "429", "tpm", "rpm", 
+                        "tokens per minute", "requests per minute", "quota"
+                    ]
+                )
+
+                if is_rate_limit:
+                    next_idx = (idx + 1) % num_keys
+                    logger.warning(
+                        f"⚠️ [Groq Pool] {key_display} hit Rate Limit (HTTP 429). "
+                        f"Auto-rotating to Key #{next_idx + 1}/{num_keys}..."
+                    )
+                    cls._groq_active_key_index = next_idx
+                    continue  # Failover to next key in pool
+
+                # For model unavailability or transient timeout, try lightweight fallback on same key
+                logger.debug(f"Groq primary model error on {key_display}: {e}. Trying instant 8B fallback...")
+                try:
+                    client = Groq(api_key=api_key, timeout=5.0)
+                    completion = client.chat.completions.create(
+                        model="llama-3.1-8b-instant",
+                        messages=[
+                            {"role": "system", "content": system_instruction},
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=0.1,
+                        max_tokens=2048
+                    )
+                    cls._groq_active_key_index = idx
+                    return completion.choices[0].message.content
+                except Exception as fb_err:
+                    fb_str = str(fb_err).lower()
+                    if any(m in fb_str for m in ["rate", "429", "tpm", "rpm"]):
+                        next_idx = (idx + 1) % num_keys
+                        logger.warning(
+                            f"⚠️ [Groq Pool] {key_display} hit Rate Limit on fallback (HTTP 429). "
+                            f"Auto-rotating to Key #{next_idx + 1}/{num_keys}..."
+                        )
+                        cls._groq_active_key_index = next_idx
+                        continue
+                    logger.warning(f"Groq error with {key_display}: {fb_err}")
+                    cls._groq_active_key_index = (idx + 1) % num_keys
+
+        logger.error("❌ [Groq Pool] All configured Groq API keys exhausted or rate-limited.")
         return None
 
     # =========================================================================
