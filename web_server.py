@@ -56,20 +56,20 @@ HTML_TEMPLATE = """
             <div class="flex items-center gap-3">
                 <span class="text-3xl">🏛️</span>
                 <h1 class="text-2xl font-bold text-white tracking-tight">CivicAudit <span class="text-blue-500">AI</span></h1>
-                <span class="bg-blue-500/20 text-blue-400 text-xs px-2.5 py-1 rounded-full font-mono font-semibold">v3.5 Universal Ingestion</span>
+                <span class="bg-purple-500/20 text-purple-400 text-xs px-2.5 py-1 rounded-full font-mono font-semibold">v4.0 Autonomous Council</span>
             </div>
-            <p class="text-slate-400 text-sm mt-1">Autonomous Public Spending Oversight with Direct PDF & Excel Upload</p>
+            <p class="text-slate-400 text-sm mt-1">Autonomous Public Procurement Oversight & Real-Time LLM Multi-Agent Tribunal</p>
         </div>
         <div class="flex items-center gap-3">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-500/20 font-mono">
                 <span>🧠 Brain:</span> <strong id="headerBrainBadge">{{ACTIVE_BRAIN}}</strong>
             </span>
-            <button onclick="openSettingsModal()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition cursor-pointer shadow-sm">
-                <span>⚙️ AI Providers & Keys</span>
-            </button>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Multi-Agent Council Online
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+                <span>🏛️ Council:</span> <strong id="headerCouncilBadge">{{COUNCIL_MODE}}</strong>
             </span>
+            <button onclick="openSettingsModal()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition cursor-pointer shadow-sm">
+                <span>⚙️ Settings & Engine</span>
+            </button>
         </div>
     </header>
 
@@ -550,6 +550,9 @@ High-Back Ergonomic Office Chair, 25 units @ $850.00
                 if (res.ok) {
                     const data = await res.json();
                     document.getElementById('modalProvider').value = data.llm_provider || 'openrouter';
+                    if (data.council_mode) {
+                        document.getElementById('modalCouncilMode').value = data.council_mode;
+                    }
                     if (data.openrouter_model) {
                         document.getElementById('modalOpenRouterModel').value = data.openrouter_model;
                     }
@@ -611,6 +614,7 @@ High-Back Ergonomic Office Chair, 25 units @ $850.00
 
             const payload = {
                 llm_provider: document.getElementById('modalProvider').value,
+                council_mode: document.getElementById('modalCouncilMode').value,
                 openrouter_model: document.getElementById('modalOpenRouterModel').value,
                 openrouter_auto_free: document.getElementById('modalAutoFree').checked,
                 api_key: document.getElementById('modalApiKey').value
@@ -625,7 +629,10 @@ High-Back Ergonomic Office Chair, 25 units @ $850.00
                 const data = await res.json();
                 if (res.ok) {
                     document.getElementById('headerBrainBadge').textContent = data.active_brain;
-                    alert('Settings updated successfully! Active Engine: ' + data.active_brain);
+                    if (data.council_mode) {
+                        document.getElementById('headerCouncilBadge').textContent = data.council_mode.toUpperCase();
+                    }
+                    alert('Settings updated successfully! Active Engine: ' + data.active_brain + ' | Council Mode: ' + (data.council_mode || 'LLM').toUpperCase());
                     closeSettingsModal();
                 } else {
                     alert('Save failed: ' + (data.error || 'Unknown error'));
@@ -676,6 +683,16 @@ High-Back Ergonomic Office Chair, 25 units @ $850.00
             </div>
 
             <div class="space-y-4">
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 block mb-1">🏛️ Council Deliberation Mode</label>
+                    <select id="modalCouncilMode" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 text-xs">
+                        <option value="llm">🧠 Full Autonomous LLM Council (Real-Time 3-Agent Live Debate)</option>
+                        <option value="hybrid">⚡ Smart Hybrid Council (LLM on Suspected Gouging; Fast on Normal)</option>
+                        <option value="deterministic">⏱️ Statutory Deterministic Formula (Zero Token Consumption)</option>
+                    </select>
+                    <p class="text-[11px] text-slate-500 mt-1">Select whether line-item price debates are conducted by real-time LLM agents or fast statutory formulas.</p>
+                </div>
+
                 <div>
                     <label class="text-xs font-semibold text-slate-300 block mb-1">Select AI Provider</label>
                     <select id="modalProvider" onchange="onProviderChange()" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 text-xs">
@@ -750,12 +767,14 @@ class SettingsPayload(BaseModel):
     openrouter_model: Optional[str] = None
     openrouter_auto_free: Optional[bool] = None
     api_key: Optional[str] = None
+    council_mode: Optional[str] = None
 
 @app.get("/api/settings")
 def get_settings():
     return {
         "active_brain": LLMClient.get_active_provider_name(),
         "llm_provider": AuditConfig.LLM_PROVIDER,
+        "council_mode": getattr(AuditConfig, "COUNCIL_MODE", "llm"),
         "openrouter_model": AuditConfig.OPENROUTER_MODEL,
         "openrouter_auto_free": AuditConfig.OPENROUTER_AUTO_FREE,
         "has_openrouter_key": bool(AuditConfig.OPENROUTER_API_KEY),
@@ -782,6 +801,12 @@ def save_settings(data: SettingsPayload):
                     break
             if not found:
                 env_lines.append(f"{key}={val}\n")
+
+        if data.council_mode:
+            c_mode = data.council_mode.lower().strip()
+            AuditConfig.COUNCIL_MODE = c_mode
+            os.environ["COUNCIL_MODE"] = c_mode
+            update_or_add_env("COUNCIL_MODE", c_mode)
 
         if data.llm_provider:
             AuditConfig.LLM_PROVIDER = data.llm_provider
@@ -831,7 +856,8 @@ def save_settings(data: SettingsPayload):
 
         return {
             "status": "success",
-            "active_brain": LLMClient.get_active_provider_name()
+            "active_brain": LLMClient.get_active_provider_name(),
+            "council_mode": getattr(AuditConfig, "COUNCIL_MODE", "llm")
         }
     except Exception as e:
         logger.error(f"Save settings error: {e}", exc_info=True)
@@ -852,7 +878,8 @@ def test_ai():
 @app.get("/", response_class=HTMLResponse)
 def index():
     brain_name = LLMClient.get_active_provider_name()
-    return HTML_TEMPLATE.replace("{{ACTIVE_BRAIN}}", brain_name)
+    council_mode = getattr(AuditConfig, "COUNCIL_MODE", "llm").upper()
+    return HTML_TEMPLATE.replace("{{ACTIVE_BRAIN}}", brain_name).replace("{{COUNCIL_MODE}}", council_mode)
 
 @app.get("/api/audit")
 def execute_audit(sample: str = "municipal_it_tender_2025.json"):

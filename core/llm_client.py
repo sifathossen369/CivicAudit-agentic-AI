@@ -385,7 +385,8 @@ class LLMClient:
     # Universal Orchestrator Dispatch
     # =========================================================================
     @classmethod
-    def complete(cls, prompt: str, system_instruction: str = "") -> Optional[str]:
+    def complete(cls, prompt: str, system_instruction: str = "", system_prompt: str = "", **kwargs) -> Optional[str]:
+        system_instruction = system_prompt or system_instruction
         provider = (AuditConfig.LLM_PROVIDER or os.getenv("LLM_PROVIDER", "auto")).lower()
 
         provider_map = {

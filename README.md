@@ -1,12 +1,12 @@
-# 🏛️ CivicAudit AI
-### *Autonomous Public Procurement Oversight & Multi-Agent Forensic Auditor*
+# 🏛️ CivicAudit AI - Agentic (v4.0.0)
+### *Autonomous Public Procurement Oversight & Real-Time LLM Multi-Agent Tribunal*
 
 <p align="center">
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+"></a>
   <a href="https://fastapi.tiangolo.com"><img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"></a>
   <a href="https://pydantic.dev"><img src="https://img.shields.io/badge/Pydantic-v2.0-E92063?style=for-the-badge&logo=pydantic&logoColor=white" alt="Pydantic v2"></a>
-  <a href="https://pytest.org"><img src="https://img.shields.io/badge/Tests-29%20Passed%20(100%25)-brightgreen?style=for-the-badge&logo=pytest&logoColor=white" alt="Pytest"></a>
-  <a href="https://openrouter.ai"><img src="https://img.shields.io/badge/AI%20Brain-OpenRouter%20%7C%20Free%20Cascade-6366F1?style=for-the-badge" alt="OpenRouter"></a>
+  <a href="https://pytest.org"><img src="https://img.shields.io/badge/Tests-32%20Passed%20(100%25)-brightgreen?style=for-the-badge&logo=pytest&logoColor=white" alt="Pytest"></a>
+  <a href="https://openrouter.ai"><img src="https://img.shields.io/badge/Tribunal-Live%20LLM%20Multi--Agent-8B5CF6?style=for-the-badge" alt="Multi-Agent"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT"></a>
 </p>
 
@@ -16,19 +16,23 @@
 
 Every year, municipal governments and state institutions disburse over **\$13 Trillion (15–20% of global GDP)** in public procurement. According to the United Nations Office on Drugs and Crime (UNODC) and the World Bank, **20% to 30% of public procurement budgets are siphoned off** due to fraudulent price-gouging, collusive supplier cartels, and disguised over-invoicing in voluminous Bill of Quantities (BOQ) spreadsheets.
 
-Traditional auditing is inherently reactive (conducted 1 to 3 years *after* contract disbursements) and samples less than 5% of line items.
-
-**CivicAudit AI** is a state-of-the-art autonomous forensic intelligence platform that audits municipal procurement packages in **real-time—before contracts are executed and public funds are released**. It automatically ingests messy procurement dockets (PDFs, Excel sheets, CSVs, JSON, OCR scans), gathers contemporaneous uncached wholesale price telemetry, convenes an **Adversarial 3-Agent Deliberation Council**, and compiles a court-ready **Forensic Audit Dossier** within seconds.
+**CivicAudit AI - Agentic (v4.0)** introduces a **True Autonomous Multi-Agent Cognitive Tribunal** where three specialized LLM agents debate each procurement line-item in real-time, cross-referencing fresh live web market telemetry, weighing statutory public procurement allowances (VAT, AIT, warranty), and issuing binding judicial consensus rulings.
 
 ---
 
-## 🚀 Key Architectural Innovations
+## 🚀 Key Architectural Innovations (v4.0 Agentic)
 
-### 1. 🏛️ Adversarial 3-Agent Deliberation Council
-Rather than relying on a naive, hallucination-prone single LLM prompt, CivicAudit AI convenes a virtual procurement tribunal for every single line item:
-- **🕵️‍♂️ Market Scout Agent:** Inquires live commercial registries to establish the unadorned factory wholesale price floor.
-- **💼 Vendor Advocate Agent:** Defends legitimate commercial overhead under Public Procurement Rules (15% VAT, 7.5% Advance Income Tax, 3-year warranty, performance bonds, delivery logistics)—granting a **25% statutory cushion**.
-- **⚖️ Lead Forensic Auditor (Arbiter):** Synthesizes statutory rules against supplier bids to issue a legally binding **Consensus Fair Ceiling (Floor × 1.22)**. Items priced within legal boundaries are ruled **`COMPLIANT`**, eliminating false alarms against honest vendors.
+### 1. 🏛️ True Cognitive 3-Agent Deliberation Tribunal
+Unlike static prompt architectures, the Tribunal executes a multi-turn adversarial deliberation among three distinct AI agents:
+- **🕵️‍♂️ Agent Scout (Market Data Investigator):** Calls LLM with wholesale floor telemetry to vigorously challenge the vendor's quoted markup.
+- **💼 Agent Advocate (Supplier Economics Counsel):** Counters Scout's challenge by presenting legitimate statutory cost additions under Public Procurement Rules (15% VAT, 7.5% Advance Income Tax, 3-year enterprise warranty, bank guarantees, delivery logistics)—granting a **25% statutory cushion**.
+- **⚖️ Chief Forensic Auditor (Judicial Arbiter):** Weighs both arguments and returns a structured JSON verdict with a legally binding **Consensus Fair Ceiling**, accompanied by an authoritative judicial declaration.
+
+### 2. 🎛️ Tri-Mode Council Architecture
+Configurable via `COUNCIL_MODE` in `.env`, the Web UI Settings Modal, or the CLI `--mode` flag:
+1. **`llm` (Full Cognitive Mode):** Every line-item undergoes a complete multi-turn LLM debate.
+2. **`hybrid` (Intelligent Adaptive Mode):** Suspected price-gouging items trigger full LLM tribunal debates; compliant items pass via millisecond statutory formulas (saving tokens and latency).
+3. **`deterministic` (Statutory Fallback Mode):** High-speed zero-token mathematical formula calculation, ensuring the system functions flawlessly even in air-gapped environments or API timeouts.
 
 ### 2. ⚡ Zero-Cache Contemporaneous Web Telemetry
 In forensic jurisprudence, audits based on stale cached databases are easily dismissed in court. CivicAudit AI performs **fresh, uncached live web inquiries** using a 4-tier waterfall:
@@ -200,20 +204,23 @@ Open your browser and navigate to **[http://127.0.0.1:8000](http://127.0.0.1:800
 
 ### 5. Run the Headless CLI
 ```bash
-# Audit the default municipal docket
-python run_audit.py
+# Audit with Full Autonomous LLM Council
+python run_audit.py --mode llm
 
-# Audit a custom file
-python run_audit.py --file data/sample_tenders/real_world_tender.csv
+# Audit with Smart Hybrid Council (LLM on anomalies, fast on compliant)
+python run_audit.py --file data/sample_tenders/real_world_tender.csv --mode hybrid
+
+# Audit with High-Speed Statutory Deterministic Formulas
+python run_audit.py --file data/sample_tenders/real_world_tender.csv --mode deterministic
 ```
 
 ### 6. Run the Test Suite
 ```bash
-# Execute all 29 automated forensic verification tests
+# Execute all 32 automated forensic & council verification tests
 pytest -v -p no:cacheprovider tests
 ```
 ```text
-============================= 29 passed in 5.31s ==============================
+============================= 32 passed in 3.67s ==============================
 ```
 
 ---

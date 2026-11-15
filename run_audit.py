@@ -36,10 +36,18 @@ def main():
         default=str(AuditConfig.SAMPLES_DIR / "municipal_it_tender_2025.json"),
         help="Path to tender file (.json, .csv, .pdf, .xlsx, .txt)"
     )
+    parser.add_argument(
+        "--mode",
+        type=str,
+        choices=["llm", "hybrid", "deterministic"],
+        default=AuditConfig.COUNCIL_MODE,
+        help="Council operating mode: 'llm' (Full LLM debate), 'hybrid' (LLM on anomalies), 'deterministic' (Fast formulas)"
+    )
     args = parser.parse_args()
+    AuditConfig.COUNCIL_MODE = args.mode
 
     console.print(Panel(
-        Text(f"{AuditConfig.PROJECT_NAME} v{AuditConfig.VERSION}\n{AuditConfig.TAGLINE}", justify="center", style="bold white on blue"),
+        Text(f"{AuditConfig.PROJECT_NAME} v{AuditConfig.VERSION}\n{AuditConfig.TAGLINE}\n[ Council Mode: {args.mode.upper()} ]", justify="center", style="bold white on blue"),
         border_style="cyan"
     ))
 

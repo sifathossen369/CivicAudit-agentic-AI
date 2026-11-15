@@ -9,9 +9,15 @@ BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
 class AuditConfig:
-    PROJECT_NAME: str = "CivicAudit AI"
-    VERSION: str = "3.5.0-Production"
-    TAGLINE: str = "Autonomous Public Procurement & Multi-Agent Forensic Auditor"
+    PROJECT_NAME: str = "CivicAudit AI - Agentic"
+    VERSION: str = "4.0.0-Autonomous-Council"
+    TAGLINE: str = "Autonomous Public Procurement Oversight with Real-Time LLM Multi-Agent Tribunal"
+    
+    # Council Operating Mode:
+    # 'llm': Full live LLM multi-turn debate between Scout, Advocate, and Arbiter
+    # 'hybrid': Live LLM debate on flagged anomalies; deterministic on compliant items
+    # 'deterministic': High-speed mathematical statutory formula fallback
+    COUNCIL_MODE: str = os.getenv("COUNCIL_MODE", "llm").lower()
     
     # Paths
     DATA_DIR: Path = BASE_DIR / "data"
