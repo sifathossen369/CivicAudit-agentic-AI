@@ -6,10 +6,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Pytest cache & test artifacts
-.pytest_cache/
-.coverage
-htmlcov/
+# Generated Audit Reports (keep .gitkeep)
+reports/*.md
+!reports/.gitkeep
 
 # Local databases
 *.db
