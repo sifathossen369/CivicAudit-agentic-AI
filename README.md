@@ -5,7 +5,6 @@
   <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+"></a>
   <a href="https://fastapi.tiangolo.com"><img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"></a>
   <a href="https://pydantic.dev"><img src="https://img.shields.io/badge/Pydantic-v2.0-E92063?style=for-the-badge&logo=pydantic&logoColor=white" alt="Pydantic v2"></a>
-  <a href="https://groq.com"><img src="https://img.shields.io/badge/Groq-Multi--Key%20Pool%20(Hot--Swap)-F55036?style=for-the-badge" alt="Groq Multi-Key Pool"></a>
   <a href="https://pytest.org"><img src="https://img.shields.io/badge/Tests-37%20Passed%20(100%25)-brightgreen?style=for-the-badge&logo=pytest&logoColor=white" alt="Pytest"></a>
   <a href="https://openrouter.ai"><img src="https://img.shields.io/badge/Tribunal-Live%20LLM%20Multi--Agent-8B5CF6?style=for-the-badge" alt="Multi-Agent"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT"></a>
@@ -13,73 +12,11 @@
 
 ---
 
-## 📑 Table of Contents
-- [Executive Summary](#-executive-summary)
-- [How CivicAudit Works in 30 Seconds (Real-World Scenario)](#-how-civicaudit-works-in-30-seconds)
-- [Traditional Procurement Audit vs. CivicAudit AI](#-traditional-procurement-audit-vs-civicaudit-ai)
-- [Key Architectural Innovations](#-key-architectural-innovations-v40-agentic)
-  - [1. Cognitive 3-Agent Deliberation Tribunal](#1-️-true-cognitive-3-agent-deliberation-tribunal)
-  - [2. Groq Multi-Key Rotation Pool & Instant 429 Failover](#2--groq-multi-key-rotation-pool--instant-hot-swap)
-  - [3. Tri-Mode Deliberation Engine](#3-️-tri-mode-council-architecture)
-  - [4. Contemporaneous Zero-Cache Web Telemetry](#4--zero-cache-contemporaneous-web-telemetry)
-  - [5. Forensic Price Sanity Guard](#5-️-forensic-price-sanity-guard)
-  - [6. Universal Multi-Format Document Ingestion](#6--universal-multi-format-document-ingestion)
-- [End-to-End System Workflow](#-end-to-end-execution-pipeline)
-- [Core Mathematical & Forensic Formulas](#-core-mathematical--forensic-formulas)
-- [What Does the LLM Council Cost?](#-what-does-the-llm-council-cost)
-- [Project Directory Structure & Why the data/ Folder Exists](#-project-directory-structure)
-- [Quickstart Guide](#-quickstart-guide)
-- [Security Notes](#-security-notes)
-- [10 Forensic Case Studies Solved](#-10-forensic-case-studies-solved)
-- [Legal & Anti-Corruption Standards](#-legal--anti-corruption-citations)
-- [License](#-license)
-
----
-
 ## 📌 Executive Summary
 
-Every year, municipal governments and state agencies disburse over **\$13 Trillion (15–20% of global GDP)** in public procurement. According to the United Nations Office on Drugs and Crime (UNODC) and the World Bank, **20% to 30% of public procurement budgets are siphoned off** through price-gouging, collusive bidding cartels, and disguised over-invoicing concealed inside voluminous Bill of Quantities (BOQ) spreadsheets.
+Every year, governments spend trillions of dollars on public procurement. Anti-corruption bodies such as the United Nations Office on Drugs and Crime (UNODC) and the World Bank estimate that a significant share of that spending is lost to fraudulent price-gouging, collusive supplier cartels, and disguised over-invoicing hidden in voluminous Bill of Quantities (BOQ) spreadsheets.
 
-**CivicAudit AI - Agentic (v4.0)** introduces an **Autonomous Multi-Agent Cognitive Tribunal**. When evaluating tenders, three specialized LLM agents debate each procurement line-item in real-time, cross-referencing fresh live web market telemetry, weighing statutory public procurement allowances (VAT, AIT, commercial warranties), and issuing legally defensible consensus verdicts in seconds.
-
----
-
-## 💡 How CivicAudit Works in 30 Seconds
-
-Imagine a City Corporation receives a 50-page procurement docket for highway infrastructure:
-
-```mermaid
-flowchart LR
-    A[📄 Tender Docket: 200 Items] --> B[🌐 Live Web Telemetry]
-    B --> C["🕵️‍♂️ Agent Scout\n'Floor: $115.90 vs Quoted: $280!'"]
-    C --> D["💼 Agent Advocate\n'Add 25% for VAT, AIT & 3Yr Warranty!'"]
-    D --> E["⚖️ Chief Forensic Arbiter\n'Verdict: CRITICAL GOUGING (+141.6%)'"]
-    E --> F[📁 Actionable Legal Dossier & Taxpayer Savings]
-```
-
-### 🔍 Real-World Audit Walkthrough:
-* **Item:** `120W High-Lumen Solar LED Street Light Luminaire` (Quantity: 200 units)
-* **Vendor's Quoted Unit Rate:** **\$280.00** (Total: \$56,000.00)
-* **Verified Market Wholesale Floor:** **\$95.00**
-* **The 3-Agent Courtroom Debate:**
-  1. **🕵️‍♂️ Agent Scout argues:** *"The wholesale market price is \$95.00. The quoted price of \$280.00 represents an excessive markup of +194.7% over factory floor rates!"*
-  2. **💼 Agent Advocate counters:** *"Under Public Procurement Rules (PPR), the vendor must bear 15% VAT, 7.5% Advance Income Tax, 3-year commercial replacement warranty, and logistics. A 25% statutory buffer establishes a fair ceiling of \$118.75."*
-  3. **⚖️ Chief Forensic Arbiter rules:** *"Even granting all statutory allowances, the quoted rate of \$280.00 exceeds the legal ceiling by **+141.6%**. The vendor is engaging in predatory price-gouging. Consensus Fair Value established at **\$115.90**."*
-* **Forensic Finding:** **CRITICAL FRAUD RISK** | **Recovered Taxpayer Funds: \$32,820.00**
-
----
-
-## ⚖️ Traditional Procurement Audit vs. CivicAudit AI
-
-| Metric | Traditional Manual Audit | 🏛️ CivicAudit Agentic AI (v4.0) |
-| :--- | :--- | :--- |
-| **Audit Duration** | 3 to 4 weeks per 100 items | **6 to 8 seconds** (Instant Parallel Processing) |
-| **Market Data Freshness** | Stale 2-year-old government rate books | **Contemporaneous Uncached Web Search** (Zero-Cache) |
-| **Deliberation Mechanism** | Single auditor's subjective impression | **3-Agent Adversarial Cognitive Tribunal** |
-| **Price Sanity Guard** | Vulnerable to toy/scrap online prices | **Proprietary 35% Industrial Machinery Guard** |
-| **Statutory Compliance** | Often penalizes honest vendors for VAT/taxes | **Built-in 25% PPR Statutory Buffer** (VAT, AIT, Warranty) |
-| **Audit Cost** | Thousands of dollars in consultant fees | **\$0 (OpenRouter / Groq Free Tiers)** or a few cents |
-| **System Crash Risk** | Regular spreadsheet parse crashes | **Zero-Crash Ingestion Pipeline** (PDF, Excel, CSV, OCR) |
+**CivicAudit AI - Agentic (v4.0)** introduces a **True Autonomous Multi-Agent Cognitive Tribunal** where three specialized LLM agents debate each procurement line-item in real-time, cross-referencing fresh live web market telemetry, weighing statutory public procurement allowances (VAT, AIT, warranty), and issuing a consensus ruling for each line item.
 
 ---
 
@@ -98,46 +35,28 @@ Unlike static prompt architectures, the Tribunal executes a multi-turn adversari
 4. **Zero-Crash Failover:** If the LLM is unavailable or any turn fails, the whole item falls back to the deterministic statutory calculation — the audit never crashes because of an AI failure.
 5. **Debate Transcripts:** The full debate transcript is shown in the dashboard's transcript cards, with one card per agent.
 
----
-
-### 2. ⚡ Groq Multi-Key Rotation Pool & Instant Hot-Swap
-High-throughput municipal audits require processing hundreds of line items in seconds. CivicAudit features an enterprise-grade **Groq Multi-Key Pool** with automated rate-limit detection:
-* **Pool Capacity:** Supports 1 to 10 Groq API keys simultaneously via comma-separated strings or numbered environment variables (`GROQ_API_KEY_1` to `GROQ_API_KEY_10`).
-* **Zero Request Drop (HTTP 429 Hot-Swap):** When a key hits token-per-minute (TPM) or request-per-minute (RPM) limits (HTTP 429), the engine automatically rotates to the next active key in $<50\text{ms}$ and completes the in-flight audit seamlessly.
-* **Auto-Cooldown Recovery:** Rate-limited keys automatically re-enter the active pool following standard cooldown intervals.
-
----
-
-### 3. 🎛️ Tri-Mode Council Architecture
+### 2. 🎛️ Tri-Mode Council Architecture
 Configurable via `COUNCIL_MODE` in `.env`, the Web UI Settings Modal, or the CLI `--mode` flag:
 * **`llm` (Full Cognitive Mode):** Every line-item undergoes a complete multi-turn LLM debate.
 * **`hybrid` (Intelligent Adaptive Mode - Recommended):** Suspected price-gouging items trigger full LLM tribunal debates; compliant items pass via millisecond statutory formulas (saving tokens and latency).
 * **`deterministic` (Statutory Fallback Mode):** High-speed zero-token mathematical formula calculation, so the system keeps working in air-gapped environments or during API outages.
 
----
-
-### 4. ⚡ Zero-Cache Contemporaneous Web Telemetry
-Audits based on stale cached prices are easy to challenge in court. CivicAudit AI performs fresh, uncached live web inquiries using a 4-tier waterfall:
+### 3. ⚡ Zero-Cache Contemporaneous Web Telemetry
+Audits based on stale cached prices are easy to challenge. CivicAudit AI performs fresh, uncached live web inquiries using a 4-tier waterfall:
 $$\text{DuckDuckGo Lite (Free Live)} \longrightarrow \text{Serper.dev (Google Shopping)} \longrightarrow \text{Tavily AI} \longrightarrow \text{Forensic Benchmark Index}$$
 
----
-
-### 5. 🛡️ Forensic Price Sanity Guard
+### 4. 🛡️ Forensic Price Sanity Guard
 Industrial assets (e.g., \$58,000 hydraulic excavators, road rollers, dump trucks) often produce search results containing \$6,000 toy mini-models or 20-year-old scrap parts. Our proprietary Sanity Guard enforces:
 $$\text{For Assets } \ge \$25,000 \implies \text{Scraped Rate must be } \ge \text{Quoted} \times 0.35$$
 Accessory noise and toy models are automatically discarded, keeping baselines realistic.
 
----
-
-### 6. 📂 Universal Multi-Format Document Ingestion
+### 5. 📂 Universal Multi-Format Document Ingestion
 Equipped with a zero-crash extraction pipeline that processes:
 * **PDF Documents:** Native text extraction via `pypdf`, with a zero-dependency fallback parser.
 * **Excel & CSV Spreadsheets:** Header-agnostic, two-pass column discovery separating Item ID (`CIV-049`) from Product Name (`20-Ton Hydraulic Excavator`).
 * **Unstructured / OCR Text:** AI semantic decomposition for scanned paper dockets.
 
----
-
-### 7. 🧠 Universal Multi-Provider AI Cascade
+### 6. 🧠 Universal Multi-Provider AI Cascade
 * Integrated with **OpenRouter Free Tier** (automatically cycling through `meta-llama/llama-3.3-70b-instruct:free`, `google/gemini-2.0-flash-exp:free`, `deepseek/deepseek-r1:free`, `qwen/qwen-2.5-coder-32b-instruct:free`).
 * Automatic failover across providers on HTTP 429 rate limits.
 * Built-in support for **Groq Multi-Key Pool**, **DeepSeek**, **Google Gemini**, **OpenAI**, **Anthropic**, and **Local Offline LLMs** (Ollama / vLLM at `http://localhost:11434/v1`).
@@ -220,11 +139,11 @@ The tribunal is designed to be cheap enough for everyday use:
 
 ---
 
-## 🛠️ Project Directory Structure
+## 🛠️ Project Structure
 
 ```text
 CivicAudit-agentic-AI/
-├── config.py                     # Central audit thresholds & Groq Multi-Key Pool loader
+├── config.py                     # Central audit thresholds & AI provider settings
 ├── conftest.py                   # Pytest configuration
 ├── requirements.txt              # Production Python dependencies
 ├── run_audit.py                  # Headless Forensic CLI Entry Point
@@ -248,13 +167,13 @@ CivicAudit-agentic-AI/
 │       ├── procurement_parser.py   # Zero-crash BOQ table & semantic parser
 │       └── type_utils.py           # Safe type converters (Currency, commas, blanks)
 ├── data/
-│   └── sample_tenders/           # 📂 Ready-to-audit demo procurement dockets (Explained below)
+│   └── sample_tenders/           # Ready-to-audit demo procurement dockets
 │       ├── municipal_it_tender_2025.json
 │       ├── civil_works_lighting_2025.json
 │       └── real_world_tender.csv
 ├── reports/                      # Auto-generated audit dossiers (.md)
 │   └── .gitkeep
-└── tests/                        # Comprehensive automated test suite (37 tests)
+└── tests/                        # Comprehensive automated test suite
     ├── test_anomaly_engine.py
     ├── test_dirty_data_edge_cases.py
     ├── test_file_extractor.py
@@ -265,13 +184,6 @@ CivicAudit-agentic-AI/
     ├── test_procurement_parser.py
     └── test_real_world_domain_fixes.py
 ```
-
-### 📁 Why the `data/sample_tenders/` Folder Exists:
-The `data/` folder is pre-bundled with real-world municipal procurement dockets to ensure **instant testing without setup**:
-1. **`municipal_it_tender_2025.json`:** Enterprise IT workstations, rack servers, and Cisco Layer-3 switches (demonstrates tech price-gouging).
-2. **`civil_works_lighting_2025.json`:** Highway solar LED streetlights, 50kVA diesel generators, and PTZ dome cameras (demonstrates civil works anomalies).
-3. **`real_world_tender.csv`:** An authentic government Bill of Quantities (BOQ) spreadsheet with messy dirty numbers, currency symbols, and real line items.
-> These files directly power the **"📂 Preloaded Dockets"** tab in the Web Dashboard, allowing any judge or auditor to see the 3-agent tribunal in action in 1 click!
 
 ---
 
@@ -296,22 +208,16 @@ pip install -r requirements.txt
 # Copy the environment template
 cp .env.example .env
 ```
-Add your **Groq**, **OpenRouter**, or **Google Gemini** API keys to `.env`. You can also configure them on the fly directly inside the Web Dashboard's Settings modal.
+Add your **OpenRouter**, **Groq**, or **Google Gemini** API keys to `.env`. You can also configure them from the Web Dashboard's Settings panel.
 
 ```env
 # Council operating mode: llm | hybrid | deterministic
 COUNCIL_MODE=hybrid
-
-# Groq Multi-Key Pool (Option A: comma-separated)
-GROQ_API_KEY=gsk_key1,gsk_key2,gsk_key3,gsk_key4
-GROQ_MODEL=llama-3.3-70b-versatile
 ```
 
-> [!TIP]
-> **`hybrid`** is the recommended default mode: full LLM debates only where numbers look suspicious. Use **`llm`** for a complete tribunal on every item, or **`deterministic`** for zero-token, offline-friendly runs.
+> **Tip:** `hybrid` is the recommended default: full LLM debates only where the numbers look suspicious. Use `llm` for a complete tribunal on every item, or `deterministic` for zero-token, offline-friendly runs.
 
-> [!IMPORTANT]
-> **Never commit your `.env` file** — it holds your private API keys and is protected by `.gitignore`.
+> 🔒 **Never commit your `.env` file** — it holds your API keys. It is already covered by `.gitignore`.
 
 ### 4. Run the Web Dashboard
 ```bash
@@ -333,7 +239,7 @@ python run_audit.py --mode llm
 python run_audit.py --file data/sample_tenders/real_world_tender.csv --mode hybrid
 
 # Audit with High-Speed Statutory Deterministic Formulas
-python run_audit.py --file data/sample_tenders/civil_works_lighting_2025.json --mode deterministic
+python run_audit.py --file data/sample_tenders/real_world_tender.csv --mode deterministic
 ```
 
 ### 6. Run the Test Suite
@@ -344,11 +250,12 @@ pytest -v -p no:cacheprovider tests
 ```text
 ============================= 37 passed in 3.67s ==============================
 ```
+*(Note: Some tests hit the live web, so the full suite takes a couple of minutes depending on network conditions.)*
 
 ---
 
 ## 🔒 Security Notes
-* **Local-First Design:** The dashboard is designed for local use. Run it on `127.0.0.1` and do not expose it on the public internet: the `/api/save_settings` endpoint writes API keys to the server's `.env` file.
+* **Local-First Design:** The dashboard is designed for local use. Run it on `127.0.0.1` and do not expose it on the public internet: the `/api/save_settings` endpoint currently has no authentication, and it writes API keys to the server's `.env` file.
 * **Key Safety:** Keep API keys in your local `.env` only, and never commit that file.
 * **Upload Boundaries:** Uploads are limited to 25 MB, and sample-file paths are restricted to the samples directory.
 
@@ -367,7 +274,7 @@ pytest -v -p no:cacheprovider tests
 | 7 | **Packaging Unit Anomalies** | 1km Optical Fiber Cable (\$1,180) vs per-meter rate (\$1.20). | Indexed 1km spool packaging directly in the forensic benchmark catalog. |
 | 8 | **False Positive Mitigation** | Honest vendors penalized for statutory VAT and taxes. | Multi-Agent Council grants 25% statutory procurement cushion. |
 | 9 | **Double Sign Display Bug** | UI displayed `+-7.3%`. | Normalized signed string formatting across backend and frontend templates. |
-| 10 | **Universal Model Resilience** | OpenRouter free model 429 rate limit errors. | Built a dynamic auto-cascade and Groq Multi-Key Pool that cycles on rate limits. |
+| 10 | **Universal Model Resilience** | OpenRouter free model 429 rate limit errors. | Built a dynamic auto-cascade that cycles across free LLM providers on rate limits. |
 
 ---
 
